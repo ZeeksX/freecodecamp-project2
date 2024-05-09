@@ -2,9 +2,12 @@ body {
 	font-family: "Share Tech Mono", monospace;
 	font-weight: 400;
 	font-style: normal;
-	background-color: #C2C2D6;
-	min-height: 80vh;
+	background-color: #c2c2d6;
+	min-height: 100vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+span {
+	color: white;
 }
