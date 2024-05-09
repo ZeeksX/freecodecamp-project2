@@ -2,43 +2,30 @@
     <div class="calculator">
         <div id="formula">5</div>
         <div id="result">0</div>
-        <div class="row" id="controls">
-            <div id="clear"><span>AC</span></div>
-            <div class='calc oper' id="division"><span>/</span></div>
-            <div class='calc oper' id="multiplication"><span>x</span></div>
-        </div>
-        <div class="row" id="row2">
-            <div class='calc num' id="seven"><span>7</span></div>
-            <div class='calc num' id="eight"><span>8</span></div>
-            <div class='calc num' id="nine"><span>9</span></div>
-            <div class='calc oper' id="subtraction"><span>-</span></div>
-        </div>
-        <div class="row" id="row3">
-            <div class='calc num' id="four"><span>4</span></div>
-            <div class='calc num' id="five"><span>5</span></div>
-            <div class='calc num' id="six"><span>6</span></div>
-            <div class='calc oper' id="addition"><span>+</span></div>
-        </div>
-        <div class="row" id="row4">
-            <div class='calc num' id="one"><span>1</span></div>
-            <div class='calc num' id="two"><span>2</span></div>
-            <div class='calc num' id="three"><span>3</span></div>
-            <div class="calc" id="equals">
-                <span>=</span>
+        <div v-for="(row, index) in calculatorStore.calculatorRows" :key="index" class="row" :id="'row' + (index + 1)">
+            <div v-for="button in row" :key="button.id" :id="button.id" :class="['calc', button.type]">
+                <span>{{ button.label }}</span>
             </div>
-        </div>
-        <div class="row" id="row5">
-            <div class='calc num' id="zero"><span>0</span></div>
-            <div class='calc num' id="dot"><span>.</span></div>
         </div>
     </div>
 </template>
 <script>
+import { useCalculatorStore } from '@/store';
+
+
 export default {
-    name: "CalculatorBody"
+    name: "CalculatorBody",
+    data() {
+        return {
+            calculatorStore: useCalculatorStore()
+        }
+    },
 }
 </script>
 <style>
+.calculator{
+    width: 20rem;
+}
 #row5 {
     margin-top: -65px;
     width: 100%;
@@ -89,7 +76,7 @@ export default {
 
 #formula {
     min-height: 1.25rem;
-    font-family: digital;
+    font-family:'digital-clock-font';
     font-size: 1.25rem;
     color: orange;
     text-align: right;
@@ -99,7 +86,7 @@ export default {
 
 #result {
     font-size: 29px;
-    font-family: digital;
+    font-family:'digital-clock-font';
     color: white;
     text-align: right;
     line-height: 35px;

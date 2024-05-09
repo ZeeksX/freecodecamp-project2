@@ -1,13 +1,10 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
+import data from "@/assets/data.json";
 
-export const useCounterStore = defineStore('counter', {
-  state: () => ({ count: 0 }),
-  getters: {
-    double: state => state.count * 2,
-  },
-  actions: {
-    increment() {
-      this.count++
-    },
-  },
-})
+export const useCalculatorStore = defineStore("calculator", {
+
+	state: () => ({
+		calculatorRows: data,
+	}),
+  
+});

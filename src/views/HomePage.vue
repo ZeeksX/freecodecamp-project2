@@ -15,7 +15,6 @@ export default {
 </script>
 <style>
 .home-page {
-    width: 20rem;
     background-color: black;
     border: 2px solid #47476b;
     padding: 5px;

@@ -1,3 +1,7 @@
+@font-face {
+	font-family: "digital-clock-font";
+	src: url("../src/assets/digital-7.ttf");
+}
 body {
 	font-family: "Share Tech Mono", monospace;
 	font-weight: 400;
