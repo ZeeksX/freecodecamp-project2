@@ -12,3 +12,10 @@ export default {
   }
 }
 </script>
+<style>
+.container {
+  background-color: black;
+  border: 2px solid #47476b;
+  padding: 5px;
+}
+</style>
