@@ -1,21 +1,18 @@
 <template>
   <div class="container">
     <HomePage />
+    <CoderDetail/>
   </div>
 </template>
 <script>
 import HomePage from "@/views/HomePage.vue"
+import CoderDetail from "./components/CoderDetail.vue";
 export default {
   name: 'App',
   components: {
-    HomePage
+    HomePage,
+    CoderDetail
   }
 }
 </script>
-<style>
-.container {
-  background-color: black;
-  border: 2px solid #47476b;
-  padding: 5px;
-}
-</style>
+

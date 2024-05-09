@@ -6,6 +6,23 @@
 </template>
 <style>
 .coder{
-    color: black;
+    color: #00264d;
+    background-color: #c2c2d6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 1rem auto;
+}
+h3{
+    font-size: 1rem;
+    text-align: center;
+}
+a{
+    text-decoration: none;
+    color: #00264d;
+}
+a:hover{
+    color: white;
 }
 </style>
