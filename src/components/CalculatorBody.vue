@@ -3,8 +3,14 @@
         <div id="formula">5</div>
         <div id="result">0</div>
         <div v-for="(row, index) in calculatorStore.calculatorRows" :key="index" class="row" :id="'row' + (index + 1)">
-            <div v-for="button in row" :key="button.id" :id="button.id" :class="['calc', button.type]">
-                <span>{{ button.label }}</span>
+            
+                <div v-for="button in row" :key="button.id" :id="button.id" :class="['calc', button.type]">
+                    <div class="button-wrapper">
+                        {{ button.label }}
+                    
+                    
+                </div>
+
             </div>
         </div>
     </div>
@@ -23,9 +29,10 @@ export default {
 }
 </script>
 <style>
-.calculator{
+.calculator {
     width: 20rem;
 }
+
 #row5 {
     margin-top: -65px;
     width: 100%;
@@ -43,9 +50,24 @@ export default {
 .calc {
     width: 25%;
 }
+.calc:hover{
+    .button-wrapper{
+        color: black;
+    }
+    color: black;
+    cursor: pointer;
+    filter: drop-shadow(#ffffff 0px 0px 1px);
+}
 
 .calc.num {
     background-color: #4D4D4D;
+    box-sizing: border-box;
+}
+.button-wrapper{
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    color: white;
 }
 
 #clear,
@@ -76,7 +98,7 @@ export default {
 
 #formula {
     min-height: 1.25rem;
-    font-family:'digital-clock-font';
+    font-family: 'digital-clock-font';
     font-size: 1.25rem;
     color: orange;
     text-align: right;
@@ -86,7 +108,7 @@ export default {
 
 #result {
     font-size: 29px;
-    font-family:'digital-clock-font';
+    font-family: 'digital-clock-font';
     color: white;
     text-align: right;
     line-height: 35px;
