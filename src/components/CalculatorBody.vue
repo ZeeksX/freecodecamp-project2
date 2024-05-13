@@ -1,33 +1,42 @@
 <template>
     <div class="calculator">
-        <div id="formula">5</div>
-        <div id="result">0</div>
+        <div id="formula">{{ calculatorStore.formula }}</div>
+        <div id="result">{{ calculatorStore.text }}</div>
         <div v-for="(row, index) in calculatorStore.calculatorRows" :key="index" class="row" :id="'row' + (index + 1)">
-            
-                <div v-for="button in row" :key="button.id" :id="button.id" :class="['calc', button.type]">
-                    <div class="button-wrapper">
-                        {{ button.label }}
-                    
-                    
+            <div v-for="button in row" :key="button.id" :id="button.id" :class="['calc', button.type]"
+                @click="handleCalculation(button.label)">
+                <div class="button-wrapper">
+                    {{ button.label }}
                 </div>
-
             </div>
         </div>
     </div>
 </template>
+
 <script>
 import { useCalculatorStore } from '@/store';
-
 
 export default {
     name: "CalculatorBody",
     data() {
         return {
             calculatorStore: useCalculatorStore()
-        }
+        };
     },
-}
+    methods: {
+        handleCalculation(value) {
+            if (value === "AC") {
+                this.calculatorStore.formula = "";
+                this.calculatorStore.text = "0";
+            } else {
+                this.calculatorStore.formula += value;
+                this.calculatorStore.text = eval(this.calculatorStore.formula).toString();
+            }
+        },
+    },
+};
 </script>
+
 <style>
 .calculator {
     width: 20rem;
@@ -50,10 +59,12 @@ export default {
 .calc {
     width: 25%;
 }
-.calc:hover{
-    .button-wrapper{
+
+.calc:hover {
+    .button-wrapper {
         color: black;
     }
+
     color: black;
     cursor: pointer;
     filter: drop-shadow(#ffffff 0px 0px 1px);
@@ -63,7 +74,8 @@ export default {
     background-color: #4D4D4D;
     box-sizing: border-box;
 }
-.button-wrapper{
+
+.button-wrapper {
     display: flex;
     flex-direction: row;
     padding: 0;

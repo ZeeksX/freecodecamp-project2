@@ -1,11 +1,12 @@
 <template>
     <div class="coder">
         <h3>Designed and Coded By </h3>
-        <h3><a href="https://www.linkedin.com/in/ikinwotezekiel/" target="_blank" rel="noreferrer">Ikinwot Ezekiel</a></h3>
+        <h3><a href="https://www.linkedin.com/in/ikinwotezekiel/" target="_blank" rel="noreferrer">Ikinwot Ezekiel</a>
+        </h3>
     </div>
 </template>
 <style>
-.coder{
+.coder {
     color: #00264d;
     background-color: #c2c2d6;
     display: flex;
@@ -14,15 +15,18 @@
     flex-direction: column;
     margin: 1rem auto;
 }
-h3{
+
+h3 {
     font-size: 1rem;
     text-align: center;
 }
-a{
+
+a {
     text-decoration: none;
     color: #00264d;
 }
-a:hover{
+
+a:hover {
     color: white;
 }
 </style>
