@@ -79,6 +79,18 @@ export default {
             secondNumber: null
         };
     },
+    computed: {
+        displayErrorMessage() {
+            if (this.calculatorStore.text.length >= 23) {
+                return 'DIGIT LIMIT MET';
+            } else {
+                return ''; // Return empty string if digit limit is not met
+            }
+        }
+    },
+    mounted() {
+        this.displayErrorMessage()
+    },
     methods: {
         updateFormula(label) {
             if (this.calculatorStore.formula.slice(-1) === '+' ||
@@ -87,72 +99,30 @@ export default {
                 this.calculatorStore.formula.slice(-1) === '/') {
                 // Don't append operator again
                 this.calculatorStore.text = label;
+                this.secondNumber = label; // Start with the new digit for secondNumber
             } else {
                 this.calculatorStore.text += label;
                 this.calculatorStore.formula += label;
+                if (this.secondNumber === null) {
+                    this.secondNumber = label; // Start with the new digit for secondNumber
+                } else {
+                    this.secondNumber += label; // Concatenate the new digit
+                }
             }
         },
+
         clearData() {
             this.calculatorStore.text = "0"
             this.calculatorStore.formula = ""
             this.firstNumber = ""
             this.secondNumber = ""
         },
-        // performOperation(oper) {
-        //     if (oper === '+' || oper === '-' || oper === 'x' || oper === '/') {
-        //         // Store the first number and operation
-        //         this.firstNumber = parseFloat(this.calculatorStore.text);
-        //         this.calculatorStore.formula = this.firstNumber + oper;
-        //         this.calculatorStore.text = oper;
-        //     } else if (oper === '=') {
-        //         // Store the second number and evaluate the expression
-        //         this.secondNumber = parseFloat(this.calculatorStore.text);
-        //         let result;
-        //         switch (this.calculatorStore.formula.slice(-1)) {
-        //             case '+':
-        //                 result = this.firstNumber + this.secondNumber;
-        //                 console.log("First number:", this.firstNumber);
-        //                 console.log("Second number:", this.secondNumber);
-
-        //                 break;
-        //             case '-':
-        //                 result = this.firstNumber - this.secondNumber;
-        //                 console.log("First number:", this.firstNumber);
-        //                 console.log("Second number:", this.secondNumber);
-
-        //                 break;
-        //             case 'x':
-        //                 result = this.firstNumber * this.secondNumber;
-        //                 console.log("First number:", this.firstNumber);
-        //                 console.log("Second number:", this.secondNumber);
-
-        //                 break;
-        //             case '/':
-        //                 result = this.firstNumber / this.secondNumber;
-        //                 console.log("First number:", this.firstNumber);
-        //                 console.log("Second number:", this.secondNumber);
-
-        //                 break;
-        //             default:
-        //                 result = 0;
-        //                 console.log("First number:", this.firstNumber);
-        //                 console.log("Second number:", this.secondNumber);
-        //             // Default result if no operation is performed
-        //         }
-        //         // Update the text and formula with the result
-        //         this.calculatorStore.text = result.toString();
-        //         this.calculatorStore.formula += this.secondNumber + ' = ' + result;
-        //     }
-        // }
         performOperation(oper) {
+
             if (oper === '+' || oper === '-' || oper === 'x' || oper === '/') {
-                // Store the first number and operation
                 this.firstNumber = parseFloat(this.calculatorStore.text);
                 this.calculatorStore.formula = this.firstNumber + oper;
-                // Clear the text to display the second number
-                this.calculatorStore.text = "";
             } else if (oper !== '=') {
-                // If not equals sign, append number to second number
                 this.calculatorStore.text += oper;
             } else {
                 this.secondNumber = parseFloat(this.calculatorStore.text);
@@ -180,7 +150,6 @@ export default {
                         result = this.firstNumber / this.secondNumber;
                         console.log("First number:", this.firstNumber);
                         console.log("Second number:", this.secondNumber);
-
                         break;
                     default:
                         result = 0;
