@@ -53,7 +53,8 @@
             <div class="calc num" id="three" @click="append('3')">
                 <div class="button-wrapper">3</div>
             </div>
-            <div class="calc oper" id="equals" @click="computeResult('=')">
+            <div class="calc oper" id="equals" @click="computeResult('=')"
+                :class="{ 'disabled': calculationCompleted }">
                 <div class="button-wrapper">=</div>
             </div>
         </div>
@@ -78,47 +79,97 @@ export default {
         return {
             calculatorStore: useCalculatorStore(),
             firstNumber: null,
-            secondNumber: null
+            secondNumber: null,
+            operator: null,
+            calculationCompleted: false
         };
     },
     methods: {
         append(label) {
-            if (this.calculatorStore.text !== "DIGIT LIMIT MET") {
-                if (this.calculatorStore.text === "0") {
+            if (!this.calculationCompleted && this.calculatorStore.text !== "DIGIT LIMIT MET") {
+                if (this.calculatorStore.text === "0" || this.isOperator(this.calculatorStore.text)) {
                     this.calculatorStore.text = label;
+                    this.calculatorStore.formula += label;
                 } else {
                     if (this.calculatorStore.text.length + label.length <= 23) {
                         this.calculatorStore.text += label;
+                        this.calculatorStore.formula += label;
                     } else {
                         this.calculatorStore.text = "DIGIT LIMIT MET";
                     }
                 }
             }
         },
+        isOperator(text) {
+            return text === '+' || text === '-' || text === '*' || text === '/';
+        },
         clearData() {
             this.calculatorStore.text = "0"
             this.calculatorStore.formula = ""
-            this.firstNumber = ""
-            this.secondNumber = ""
+            this.firstNumber = null
+            this.secondNumber = null
+            this.calculationCompleted = false;
         },
         addition() {
             this.firstNumber = parseFloat(this.calculatorStore.text)
-            this.calculatorStore.formula = this.calculatorStore.text + "+"
+            this.calculatorStore.formula += "+" // Add the operator to the formula
             this.calculatorStore.text = "+"
+            this.operator = "+"
         },
         subtraction() {
-            this.calculatorStore.formula = this.calculatorStore.text + "-"
+            this.firstNumber = parseFloat(this.calculatorStore.text)
+            this.calculatorStore.formula += "-" // Add the operator to the formula
             this.calculatorStore.text = "-"
+            this.operator = "-"
         },
         division() {
-            this.calculatorStore.formula = this.calculatorStore.text + "/"
+            this.firstNumber = parseFloat(this.calculatorStore.text)
+            this.calculatorStore.formula += "/" // Add the operator to the formula
             this.calculatorStore.text = "/"
+            this.operator = "/"
         },
         multiplication() {
-            this.calculatorStore.formula = this.calculatorStore.text + "-"
-            this.calculatorStore.text = "-"
+            this.firstNumber = parseFloat(this.calculatorStore.text)
+            this.calculatorStore.formula += "." // Add the operator to the formula
+            this.calculatorStore.text = "x"
+            this.operator = "x"
         },
+        computeResult() {
+            let result = '';
+            const operatorIndex = this.calculatorStore.formula.indexOf(this.calculatorStore.text);
+            this.secondNumber = parseFloat(this.calculatorStore.formula.substring(operatorIndex));
 
+            switch (this.operator) {
+                case '+':
+                    result = this.firstNumber + this.secondNumber;
+                    break;
+                case '-':
+                    result = this.firstNumber - this.secondNumber;
+                    break;
+                case '/':
+                    if (this.secondNumber !== 0) {
+                        result = this.firstNumber / this.secondNumber;
+                    } else {
+                        result = 'ERROR: Division by zero';
+                    }
+                    break;
+                case 'x':
+                    result = this.firstNumber * this.secondNumber;
+                    break;
+                case '=':
+                    result = this.firstNumber
+                    break;    
+                default:
+                    console.log(this.calculationCompleted)
+                    result = 'ERROR: Invalid operation';
+
+            }
+            // Reset calculator state
+            this.calculatorStore.text = result.toString();
+            this.calculatorStore.formula += "=" + result.toString();
+            this.operator = null;
+            this.calculationCompleted = true
+        }
     },
 
 };
@@ -127,6 +178,10 @@ export default {
 <style>
 .calculator {
     width: 20rem;
+}
+
+.disabled {
+    pointer-events: none;
 }
 
 #row5 {
