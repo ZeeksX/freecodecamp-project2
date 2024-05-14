@@ -1,4 +1,6 @@
 <template>
+    <p>First Number: {{ firstNumber }}</p>
+    <p>Second Number: {{ secondNumber }}</p>
     <div class="calculator">
         <div id="formula">{{ calculatorStore.formula }}</div>
         <div id="result">{{ calculatorStore.text }}</div>
@@ -6,60 +8,60 @@
             <div class="calc" id="clear" @click="clearData">
                 <div class="button-wrapper">AC</div>
             </div>
-            <div class="calc oper" id="division" @click="performOperation('/')">
+            <div class="calc oper" id="division" @click="division">
                 <div class="button-wrapper">/</div>
             </div>
-            <div class="calc oper" id="multiplication" @click="performOperation('x')">
+            <div class="calc oper" id="multiplication" @click="multiplication">
                 <div class="button-wrapper">x</div>
             </div>
         </div>
         <div class="row" id="row2">
-            <div class="calc num" id="seven" @click="updateFormula('7')">
+            <div class="calc num" id="seven" @click="append('7')">
                 <div class="button-wrapper">7</div>
             </div>
-            <div class="calc num" id="eight" @click="updateFormula('8')">
+            <div class="calc num" id="eight" @click="append('8')">
                 <div class="button-wrapper">8</div>
             </div>
-            <div class="calc num" id="nine" @click="updateFormula('9')">
+            <div class="calc num" id="nine" @click="append('9')">
                 <div class="button-wrapper">9</div>
             </div>
-            <div class="calc oper" id="subtraction" @click="performOperation('-')">
+            <div class="calc oper" id="subtraction" @click="subtraction">
                 <div class="button-wrapper">-</div>
             </div>
         </div>
         <div class="row" id="row3">
-            <div class="calc num" id="four" @click="updateFormula('4')">
+            <div class="calc num" id="four" @click="append('4')">
                 <div class="button-wrapper">4</div>
             </div>
-            <div class="calc num" id="five" @click="updateFormula('5')">
+            <div class="calc num" id="five" @click="append('5')">
                 <div class="button-wrapper">5</div>
             </div>
-            <div class="calc num" id="six" @click="updateFormula('6')">
+            <div class="calc num" id="six" @click="append('6')">
                 <div class="button-wrapper">6</div>
             </div>
-            <div class="calc oper" id="addition" @click="performOperation('+')">
+            <div class="calc oper" id="addition" @click="addition">
                 <div class="button-wrapper">+</div>
             </div>
         </div>
         <div class="row" id="row4">
-            <div class="calc num" id="one" @click="updateFormula('1')">
+            <div class="calc num" id="one" @click="append('1')">
                 <div class="button-wrapper">1</div>
             </div>
-            <div class="calc num" id="two" @click="updateFormula('2')">
+            <div class="calc num" id="two" @click="append('2')">
                 <div class="button-wrapper">2</div>
             </div>
-            <div class="calc num" id="three" @click="updateFormula('3')">
+            <div class="calc num" id="three" @click="append('3')">
                 <div class="button-wrapper">3</div>
             </div>
-            <div class="calc oper" id="equals" @click="performOperation('=')">
+            <div class="calc oper" id="equals" @click="computeResult('=')">
                 <div class="button-wrapper">=</div>
             </div>
         </div>
         <div class="row" id="row5">
-            <div class="calc num" id="zero" @click="updateFormula('0')">
+            <div class="calc num" id="zero" @click="append('0')">
                 <div class="button-wrapper">0</div>
             </div>
-            <div class="calc num" id="dot" @click="updateFormula('.')">
+            <div class="calc num" id="dot" @click="append('.')">
                 <div class="button-wrapper">.</div>
             </div>
         </div>
@@ -79,89 +81,44 @@ export default {
             secondNumber: null
         };
     },
-    computed: {
-        displayErrorMessage() {
-            if (this.calculatorStore.text.length >= 23) {
-                return 'DIGIT LIMIT MET';
-            } else {
-                return ''; // Return empty string if digit limit is not met
-            }
-        }
-    },
-    mounted() {
-        this.displayErrorMessage()
-    },
     methods: {
-        updateFormula(label) {
-            if (this.calculatorStore.formula.slice(-1) === '+' ||
-                this.calculatorStore.formula.slice(-1) === '-' ||
-                this.calculatorStore.formula.slice(-1) === 'x' ||
-                this.calculatorStore.formula.slice(-1) === '/') {
-                // Don't append operator again
-                this.calculatorStore.text = label;
-                this.secondNumber = label; // Start with the new digit for secondNumber
-            } else {
-                this.calculatorStore.text += label;
-                this.calculatorStore.formula += label;
-                if (this.secondNumber === null) {
-                    this.secondNumber = label; // Start with the new digit for secondNumber
+        append(label) {
+            if (this.calculatorStore.text !== "DIGIT LIMIT MET") {
+                if (this.calculatorStore.text === "0") {
+                    this.calculatorStore.text = label;
                 } else {
-                    this.secondNumber += label; // Concatenate the new digit
+                    if (this.calculatorStore.text.length + label.length <= 23) {
+                        this.calculatorStore.text += label;
+                    } else {
+                        this.calculatorStore.text = "DIGIT LIMIT MET";
+                    }
                 }
             }
         },
-
         clearData() {
             this.calculatorStore.text = "0"
             this.calculatorStore.formula = ""
             this.firstNumber = ""
             this.secondNumber = ""
         },
-        performOperation(oper) {
+        addition() {
+            this.firstNumber = parseFloat(this.calculatorStore.text)
+            this.calculatorStore.formula = this.calculatorStore.text + "+"
+            this.calculatorStore.text = "+"
+        },
+        subtraction() {
+            this.calculatorStore.formula = this.calculatorStore.text + "-"
+            this.calculatorStore.text = "-"
+        },
+        division() {
+            this.calculatorStore.formula = this.calculatorStore.text + "/"
+            this.calculatorStore.text = "/"
+        },
+        multiplication() {
+            this.calculatorStore.formula = this.calculatorStore.text + "-"
+            this.calculatorStore.text = "-"
+        },
 
-            if (oper === '+' || oper === '-' || oper === 'x' || oper === '/') {
-                this.firstNumber = parseFloat(this.calculatorStore.text);
-                this.calculatorStore.formula = this.firstNumber + oper;
-            } else if (oper !== '=') {
-                this.calculatorStore.text += oper;
-            } else {
-                this.secondNumber = parseFloat(this.calculatorStore.text);
-                let result;
-                switch (this.calculatorStore.formula.slice(-1)) {
-                    case '+':
-                        result = this.firstNumber + this.secondNumber;
-                        console.log("First number:", this.firstNumber);
-                        console.log("Second number:", this.secondNumber);
-
-                        break;
-                    case '-':
-                        result = this.firstNumber - this.secondNumber;
-                        console.log("First number:", this.firstNumber);
-                        console.log("Second number:", this.secondNumber);
-
-                        break;
-                    case 'x':
-                        result = this.firstNumber * this.secondNumber;
-                        console.log("First number:", this.firstNumber);
-                        console.log("Second number:", this.secondNumber);
-
-                        break;
-                    case '/':
-                        result = this.firstNumber / this.secondNumber;
-                        console.log("First number:", this.firstNumber);
-                        console.log("Second number:", this.secondNumber);
-                        break;
-                    default:
-                        result = 0;
-                        console.log("First number:", this.firstNumber);
-                        console.log("Second number:", this.secondNumber);
-                    // Default result if no operation is performed
-                }
-                // Update the text and formula with the result
-                this.calculatorStore.text = result.toString();
-                this.calculatorStore.formula += this.secondNumber + ' = ' + result;
-            }
-        }
     },
 
 };
@@ -254,5 +211,9 @@ export default {
     color: white;
     text-align: right;
     line-height: 35px;
+}
+
+p {
+    color: white;
 }
 </style>
