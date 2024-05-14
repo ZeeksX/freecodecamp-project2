@@ -81,7 +81,8 @@ export default {
             firstNumber: null,
             secondNumber: null,
             operator: null,
-            calculationCompleted: false
+            calculationCompleted: false,
+            result: null
         };
     },
     methods: {
@@ -130,45 +131,53 @@ export default {
         },
         multiplication() {
             this.firstNumber = parseFloat(this.calculatorStore.text)
-            this.calculatorStore.formula += "." // Add the operator to the formula
-            this.calculatorStore.text = "x"
-            this.operator = "x"
+            this.calculatorStore.formula += "*" // Add the operator to the formula
+            this.calculatorStore.text = "*"
+            this.operator = "*"
+        },
+        clearAndEnableInput() {
+            this.operator = null;
+            this.firstNumber = null;
+            this.calculationCompleted = false;
         },
         computeResult() {
-            let result = '';
+
             const operatorIndex = this.calculatorStore.formula.indexOf(this.calculatorStore.text);
             this.secondNumber = parseFloat(this.calculatorStore.formula.substring(operatorIndex));
 
             switch (this.operator) {
                 case '+':
-                    result = this.firstNumber + this.secondNumber;
+                    this.result = this.firstNumber + this.secondNumber;
                     break;
                 case '-':
-                    result = this.firstNumber - this.secondNumber;
+                    this.result = this.firstNumber - this.secondNumber;
                     break;
                 case '/':
                     if (this.secondNumber !== 0) {
-                        result = this.firstNumber / this.secondNumber;
+                        this.result = this.firstNumber / this.secondNumber;
                     } else {
-                        result = 'ERROR: Division by zero';
+                        this.result = 'Syntax Error';
                     }
                     break;
-                case 'x':
-                    result = this.firstNumber * this.secondNumber;
+                case '*':
+                    this.result = this.firstNumber * this.secondNumber;
                     break;
-                case '=':
-                    result = this.firstNumber
-                    break;    
                 default:
-                    console.log(this.calculationCompleted)
-                    result = 'ERROR: Invalid operation';
-
+                    return
             }
-            // Reset calculator state
-            this.calculatorStore.text = result.toString();
-            this.calculatorStore.formula += "=" + result.toString();
-            this.operator = null;
-            this.calculationCompleted = true
+            if (this.operator == null) {
+                this.result = this.calculatorStore.text
+                this.calculatorStore.formula = this.result
+                this.calculatorStore.formula += "=" + this.result.toString();
+                this.calculationCompleted = true
+            } else {
+                this.calculatorStore.text = this.result.toString();
+                this.calculatorStore.formula += "=" + this.result.toString();
+                this.operator = null;
+                this.calculationCompleted = true
+            }
+
+
         }
     },
 
