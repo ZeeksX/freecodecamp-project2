@@ -1,7 +1,4 @@
 <template>
-    <div>
-        <p>First Number: {{ firstNumber }}</p>
-        <p>Second Number: {{ secondNumber }}</p>
         <div class="calculator">
             <div id="formula">{{ calculatorStore.formula }}</div>
             <div id="result">{{ calculatorStore.text }}</div>
@@ -68,7 +65,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </template>
 
 <script>
@@ -89,12 +85,10 @@ export default {
         append(label) {
             if (!this.calculationCompleted && this.calculatorStore.text !== "DIGIT LIMIT MET") {
                 if (this.calculatorStore.text === "0" || this.isOperator(this.calculatorStore.text)) {
-                    // Set operator if it's the first input or after an operator
                     this.calculatorStore.text = label;
                     this.lastOperator = label;
                 } else {
                     if (this.isOperator(label)) {
-                        // Update displayed text and formula if the new label is an operator (except -) and there's a previous operator
                         if (this.isOperator(this.lastOperator) && this.lastOperator !== label && label !== "-") {
                             if (this.lastOperator == "+" || this.lastOperator == "/" || this.lastOperator == "*") {
                                 this.calculatorStore.text = label;
@@ -109,15 +103,12 @@ export default {
                             this.calculatorStore.formula += label
                         }
                     } else {
-                        // Update displayed text with the new number if not an operator
                         this.calculatorStore.text += label;
 
-                        this.lastOperator = null; // Reset lastOperator for next input
+                        this.lastOperator = null; 
                     }
 
                 }
-
-                // Update formula only if the appended character is different from the last character
                 if (this.calculatorStore.formula.slice(-1) !== label) {
                     if (this.lastOperator == "+" || this.lastOperator == "/" || this.lastOperator == "*") {
                         this.calculatorStore.formula = this.calculatorStore.formula.slice(0, -1) + label;
