@@ -75,8 +75,6 @@ export default {
     data() {
         return {
             calculatorStore: useCalculatorStore(),
-            firstNumber: null,
-            secondNumber: null,
             lastOperator: null,
             calculationCompleted: false
         };
