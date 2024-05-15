@@ -91,7 +91,7 @@ export default {
                 if (this.calculatorStore.text === "0" || this.isOperator(this.calculatorStore.text)) {
                     this.calculatorStore.text = label;
                     this.calculatorStore.formula += label;
-                    this.result = null
+                    this.result = null;
                 } else {
                     if (this.calculatorStore.text.length + label.length <= 23) {
                         this.calculatorStore.text += label;
@@ -100,19 +100,15 @@ export default {
                         this.calculatorStore.text = "DIGIT LIMIT MET";
                     }
                 }
-            }
-            if (this.result != null) {
-                this.formula = ""
-
-                if (this.calculatorStore.text.length + label.length <= 23) {
-                    this.calculatorStore.text += label;
-                    this.calculatorStore.formula += label;
-                } else {
-                    this.calculatorStore.text = "DIGIT LIMIT MET";
-                }
-
+            } else {
+                this.calculatorStore.formula = "";
+                this.calculatorStore.text = label;
+                this.calculatorStore.formula += label;
+                this.calculationCompleted = false;
+                this.result = null;
             }
         },
+
         isOperator(text) {
             return text === '+' || text === '-' || text === '*' || text === '/';
         },
@@ -125,26 +121,26 @@ export default {
             this.calculationCompleted = false;
         },
         addition() {
-            this.firstNumber = parseFloat(this.calculatorStore.text)
-            this.calculatorStore.formula += "+" // Add the operator to the formula
+            this.firstNumber = parseFloat(this.calculatorStore.text);
+            this.calculatorStore.formula += "+"
             this.calculatorStore.text = "+"
             this.operator = "+"
         },
         subtraction() {
-            this.firstNumber = parseFloat(this.calculatorStore.text)
-            this.calculatorStore.formula += "-" // Add the operator to the formula
+            this.firstNumber = parseFloat(this.calculatorStore.text);
+            this.calculatorStore.formula += "-"
             this.calculatorStore.text = "-"
             this.operator = "-"
         },
         division() {
-            this.firstNumber = parseFloat(this.calculatorStore.text)
-            this.calculatorStore.formula += "/" // Add the operator to the formula
+            this.firstNumber = parseFloat(this.calculatorStore.text);
+            this.calculatorStore.formula += "/"
             this.calculatorStore.text = "/"
             this.operator = "/"
         },
         multiplication() {
-            this.firstNumber = parseFloat(this.calculatorStore.text)
-            this.calculatorStore.formula += "*" // Add the operator to the formula
+            this.firstNumber = parseFloat(this.calculatorStore.text);
+            this.calculatorStore.formula += "*"
             this.calculatorStore.text = "*"
             this.operator = "*"
         },
@@ -155,44 +151,41 @@ export default {
         },
         computeResult() {
             let result = ""
-            const operatorIndex = this.calculatorStore.formula.indexOf(this.calculatorStore.text);
-            this.secondNumber = parseFloat(this.calculatorStore.formula.substring(operatorIndex));
-
-            switch (this.operator) {
-                case '+':
-                    result = this.firstNumber + this.secondNumber;
-                    break;
-                case '-':
-                    result = this.firstNumber - this.secondNumber;
-                    break;
-                case '/':
-                    if (this.secondNumber !== 0) {
-                        result = this.firstNumber / this.secondNumber;
-                    } else {
-                        result = 'Syntax Error';
-                    }
-                    break;
-                case '*':
-                    result = this.firstNumber * this.secondNumber;
-                    break;
-                default:
-                    return
-            }
-            if (this.operator == null) {
-                result = this.calculatorStore.text
+            if (this.operator != null) {
+                const operatorIndex = this.calculatorStore.formula.indexOf(this.calculatorStore.text);
+                this.secondNumber = parseFloat(this.calculatorStore.formula.substring(operatorIndex));
+                switch (this.operator) {
+                    case '+':
+                        result = this.firstNumber + (this.secondNumber);
+                        break;
+                    case '-':
+                        result = this.firstNumber - (this.secondNumber);
+                        break;
+                    case '/':
+                        if (this.secondNumber !== 0) {
+                            result = this.firstNumber / (this.secondNumber);
+                        } else {
+                            result = 'Syntax Error';
+                        }
+                        break;
+                    case '*':
+                        result = this.firstNumber * (this.secondNumber);
+                        break;
+                    default:
+                        return this.operator = null
+                }
                 this.result = result
-                this.calculatorStore.formula = result
+                this.calculatorStore.text = result
                 this.calculatorStore.formula += "=" + result.toString();
                 this.calculationCompleted = true
             } else {
-                this.calculatorStore.text = result.toString();
-                this.result = result
-                this.calculatorStore.formula += "=" + result.toString();
+                this.firstNumber = this.calculatorStore.text
+                this.calculatorStore.formula = this.firstNumber
+                this.calculatorStore.formula += "=" + this.firstNumber.toString();
+                result = this.firstNumber
                 this.operator = null;
                 this.calculationCompleted = true
             }
-
-
         }
     },
 
