@@ -76,11 +76,13 @@ export default {
         return {
             calculatorStore: useCalculatorStore(),
             lastOperator: null,
+            result: null,
             calculationCompleted: false
         };
     },
     methods: {
-       append(label) {
+        append(label) {
+            this.calculationCompleted = false;
             if (!this.calculationCompleted && this.calculatorStore.text !== "DIGIT LIMIT MET") {
                 if (this.calculatorStore.text === "0" || this.isOperator(this.calculatorStore.text)) {
                     this.calculatorStore.text = label;
@@ -109,13 +111,14 @@ export default {
                         // Append the number to the text and formula
                         this.calculatorStore.text += label;
                         this.calculatorStore.formula += label;
-                        // If the last character was an operator, reset lastOperator to null
-                        // if (this.isOperator(this.lastOperator)) {
-                        //     this.lastOperator = null;
-                        // }
                     }
                 }
+            } else if (this.calculationCompleted && this.isOperator(label)) {
+                this.calculatorStore.formula = this.result;
+                this.calculatorStore.formula += label;
+                this.calculationCompleted = false;
             }
+
         },
 
         isOperator(text) {
@@ -131,13 +134,15 @@ export default {
         },
         computeResult() {
             try {
-                this.calculatorStore.text = eval(this.calculatorStore.formula);
+                this.calculatorStore.text = eval(this.calculatorStore.formula)
             } catch (error) {
                 this.calculatorStore.text = "Error";
             }
             this.calculatorStore.formula += "=" + this.calculatorStore.text;
+            this.result = this.calculatorStore.text
             this.calculationCompleted = true;
         },
+
     }
 };
 </script>
