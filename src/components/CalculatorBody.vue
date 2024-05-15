@@ -85,64 +85,20 @@ export default {
         };
     },
     methods: {
-        // append(label) {
-        //     if (!this.calculationCompleted && this.calculatorStore.text !== "DIGIT LIMIT MET") {
-        //         if (this.calculatorStore.text === "0" || this.isOperator(this.calculatorStore.text)) {
-        //             this.calculatorStore.text = label;
-        //             this.calculatorStore.formula +=label;
-        //         } else {
-        //             if (label === "." && !this.calculatorStore.formula.includes(".")) {
-        //                 this.calculatorStore.text += label;
-        //                 this.calculatorStore.formula += label;
-        //             } else if (this.calculatorStore.formula.length + label.length <= 23) {
-        //                 this.calculatorStore.text += label;
-        //                 this.calculatorStore.formula += label;
-        //             } else {
-        //                 this.calculatorStore.text = "DIGIT LIMIT MET";
-        //             }
-        //         }
-        //     } else {
-        //         // Reset the formula and display the clicked operator
-        //         this.calculatorStore.formula = this.calculatorStore.text + label;
-        //         this.calculatorStore.text = label;
-        //         this.calculationCompleted = false;
-        //     }
-        // },
         append(label) {
             if (!this.calculationCompleted && this.calculatorStore.text !== "DIGIT LIMIT MET") {
                 if (this.calculatorStore.text === "0" || this.isOperator(this.calculatorStore.text)) {
                     this.calculatorStore.text = label;
-                    this.calculatorStore.formula += label;
-                    this.result = null;
                 } else {
-                    if (this.calculatorStore.text.length + label.length <= 23) {
-                        this.calculatorStore.text += label;
-                        this.calculatorStore.formula += label;
+                    if (this.isOperator(label)) {
+                        // Update displayed text only if the label is an operator
+                        this.calculatorStore.text = label;
                     } else {
-                        this.calculatorStore.text = "DIGIT LIMIT MET";
+                        // Update displayed text with the new number if not an operator
+                        this.calculatorStore.text += label;
                     }
                 }
-            } else if (this.result !== null) {
-                if (this.isOperator(label)) {
-                    // Store the result as the first number and set the operator
-                    this.firstNumber = this.result;
-                    this.operator = label;
-                    this.calculatorStore.formula += label;
-                    this.calculatorStore.text = label;
-                } else {
-                    // Treat the entered number as the second number
-                    this.calculatorStore.text = label;
-                    this.calculatorStore.formula += label;
-                    this.calculationCompleted = false;
-                    this.operator = label;
-                }
-            }
-            else {
-                this.calculatorStore.formula = "";
-                this.calculatorStore.text = label;
                 this.calculatorStore.formula += label;
-                this.calculationCompleted = false;
-                this.result = null
             }
         },
         isOperator(text) {
