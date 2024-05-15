@@ -101,12 +101,28 @@ export default {
                         this.calculatorStore.text = "DIGIT LIMIT MET";
                     }
                 }
-            } else {
+            } else if (this.result !== null) {
+                if (this.isOperator(label)) {
+                    // Store the result as the first number and set the operator
+                    this.firstNumber = this.result;
+                    this.operator = label;
+                    this.calculatorStore.formula += label;
+                    this.calculatorStore.text = label;
+                } else {
+                    // Treat the entered number as the second number
+
+                    this.calculatorStore.text = label;
+                    this.calculatorStore.formula += label;
+                    this.calculationCompleted = false;
+                    this.operator = label;
+                }
+            }
+            else {
                 this.calculatorStore.formula = "";
                 this.calculatorStore.text = label;
                 this.calculatorStore.formula += label;
                 this.calculationCompleted = false;
-                this.result = null;
+                this.result = null
             }
         },
 
@@ -122,34 +138,44 @@ export default {
             this.calculationCompleted = false;
         },
         addition() {
-            if (this.lastOperator == null) {
+            if (this.lastOperator == null && this.result == null) {
                 this.firstNumber = parseFloat(this.calculatorStore.text);
                 this.calculatorStore.formula += "+"
                 this.calculatorStore.text = "+"
                 this.operator = "+"
                 this.lastOperator = this.operator
-            } else if (this.lastOperator == "+") {
+            } else if (this.lastOperator == "+" || this.lastOperator == "*" || this.lastOperator == "/" || this.lastOperator == "-") {
                 this.firstNumber = parseFloat(this.calculatorStore.formula.slice(0, -1));
                 this.calculatorStore.formula = this.calculatorStore.formula.slice(0, -1) + this.operator
                 this.calculatorStore.text = "+"
                 this.operator = "+"
+            } else {
+                this.firstNumber = this.result;
+                this.operator = "+"; // Set the operator for the next operation
+                this.calculatorStore.formula += "+";
+                this.calculatorStore.text = "+";
             }
+        },
+        // subtraction() {
+        //     if (this.lastOperator == null) {
+        //         this.firstNumber = parseFloat(this.calculatorStore.text);
+        //         this.calculatorStore.formula += "-"
+        //         this.calculatorStore.text = "-"
+        //         this.operator = "-"
+        //         this.lastOperator = this.operator
+        //     } else if (this.lastOperator == "-") {
+        //         this.calculatorStore.text = "-"
+        //         this.operator = "-"
+        //         this.firstNumber = parseFloat(this.calculatorStore.formula.slice(0, -1));
+        //         this.calculatorStore.formula = this.calculatorStore.formula.slice(0, -1) + this.operator
 
-        },
-        subtraction() {
-            if (this.lastOperator == null) {
-                this.firstNumber = parseFloat(this.calculatorStore.text);
-                this.calculatorStore.formula += "-"
-                this.calculatorStore.text = "-"
-                this.operator = "-"
-                this.lastOperator = this.operator
-            } else if (this.lastOperator == "-") {
-                this.firstNumber = parseFloat(this.calculatorStore.formula.slice(0, -1));
-                this.calculatorStore.formula = this.calculatorStore.formula.slice(0, -1) + this.operator
-                this.calculatorStore.text = "-"
-                this.operator = "-"
-            }
-        },
+        //     } else {
+        //         this.secondNumber = parseFloat("-" * this.secondNumber)
+        //         this.calculatorStore.formula += "-"
+        //         this.calculatorStore.text = "-"
+        //         console.log(this.secondNumber)
+        //     }
+        // },
         division() {
             if (this.lastOperator == null) {
                 this.firstNumber = parseFloat(this.calculatorStore.text);
@@ -157,11 +183,12 @@ export default {
                 this.calculatorStore.text = "/"
                 this.operator = "/"
                 this.lastOperator = this.operator
-            } else if (this.lastOperator == "/") {
-                this.firstNumber = parseFloat(this.calculatorStore.formula.slice(0, -1));
-                this.calculatorStore.formula = this.calculatorStore.formula.slice(0, -1) + this.operator
+            } else if (this.lastOperator == "+" || this.lastOperator == "*" || this.lastOperator == "/" || this.lastOperator == "-") {
                 this.calculatorStore.text = "/"
                 this.operator = "/"
+                this.firstNumber = parseFloat(this.calculatorStore.formula.slice(0, -1));
+                this.calculatorStore.formula = this.calculatorStore.formula.slice(0, -1) + this.operator
+
             }
         },
         multiplication() {
@@ -171,11 +198,12 @@ export default {
                 this.calculatorStore.text = "*"
                 this.operator = "*"
                 this.lastOperator = this.operator
-            } else if (this.lastOperator == "*") {
-                this.firstNumber = parseFloat(this.calculatorStore.formula.slice(0, -1));
-                this.calculatorStore.formula = this.calculatorStore.formula.slice(0, -1) + this.operator
+            } else if (this.lastOperator == "+" || this.lastOperator == "*" || this.lastOperator == "/" || this.lastOperator == "-") {
                 this.calculatorStore.text = "*"
                 this.operator = "*"
+                this.firstNumber = parseFloat(this.calculatorStore.formula.slice(0, -1));
+                this.calculatorStore.formula = this.calculatorStore.formula.slice(0, -1) + this.operator
+
             }
         },
         clearAndEnableInput() {
@@ -185,46 +213,47 @@ export default {
             this.lastOperator = null
         },
         computeResult() {
-            let result = ""
             if (this.operator != null) {
                 const operatorIndex = this.calculatorStore.formula.indexOf(this.calculatorStore.text);
                 this.secondNumber = parseFloat(this.calculatorStore.formula.substring(operatorIndex));
                 switch (this.operator) {
                     case '+':
-                        result = this.firstNumber + (this.secondNumber);
+                        this.result = this.firstNumber + this.secondNumber;
                         break;
                     case '-':
-                        result = this.firstNumber - (this.secondNumber);
+                        this.result = this.firstNumber - this.secondNumber;
                         break;
                     case '/':
                         if (this.secondNumber !== 0) {
-                            result = this.firstNumber / (this.secondNumber);
+                            this.result = this.firstNumber / this.secondNumber;
                         } else {
-                            result = 'Syntax Error';
+                            this.result = 'Syntax Error';
                         }
                         break;
                     case '*':
-                        result = this.firstNumber * (this.secondNumber);
+                        this.result = this.firstNumber * this.secondNumber;
                         break;
                     default:
-                        return this.operator = null
+                        return this.operator = null;
                 }
-                this.result = result
-                this.calculatorStore.text = result
-                this.calculatorStore.formula += "=" + result.toString();
-                this.calculationCompleted = true
-                this.operator = null
-                this.lastOperator = null
-            } else {
-                this.firstNumber = this.calculatorStore.text
-                this.calculatorStore.formula = this.firstNumber
-                this.calculatorStore.formula += "=" + this.firstNumber.toString();
-                result = this.firstNumber
+
+                this.calculatorStore.text = this.result;
+                this.calculatorStore.formula += "=" + this.result.toString();
+                this.calculationCompleted = true;
                 this.operator = null;
-                this.calculationCompleted = true
-                this.lastOperator = null
+                this.lastOperator = null;
+                this.firstNumber = this.result; // Set the result as the first number for the next operation
+            } else {
+                // If operator is null, reset and prepare for the next calculation
+                this.firstNumber = parseFloat(this.calculatorStore.text);
+                this.calculatorStore.formula = this.firstNumber;
+                this.calculatorStore.formula += "=" + this.firstNumber.toString();
+                this.result = this.firstNumber;
+                this.calculationCompleted = true;
+                this.lastOperator = null;
             }
         }
+
     },
 
 };
