@@ -1,5 +1,6 @@
 # freecodecamp-project2
-
+# deployment link
+Click here [Freecodecamp Calculator](https://freecodecamp-calculator-eight.vercel.app/)
 ## Project setup
 ```
 npm install
