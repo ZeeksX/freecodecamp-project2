@@ -91,6 +91,7 @@ export default {
                 if (this.calculatorStore.text === "0" || this.isOperator(this.calculatorStore.text)) {
                     this.calculatorStore.text = label;
                     this.calculatorStore.formula += label;
+                    this.result = null
                 } else {
                     if (this.calculatorStore.text.length + label.length <= 23) {
                         this.calculatorStore.text += label;
@@ -99,6 +100,17 @@ export default {
                         this.calculatorStore.text = "DIGIT LIMIT MET";
                     }
                 }
+            }
+            if (this.result != null) {
+                this.formula = ""
+
+                if (this.calculatorStore.text.length + label.length <= 23) {
+                    this.calculatorStore.text += label;
+                    this.calculatorStore.formula += label;
+                } else {
+                    this.calculatorStore.text = "DIGIT LIMIT MET";
+                }
+
             }
         },
         isOperator(text) {
@@ -109,6 +121,7 @@ export default {
             this.calculatorStore.formula = ""
             this.firstNumber = null
             this.secondNumber = null
+            this.result = null
             this.calculationCompleted = false;
         },
         addition() {
@@ -141,38 +154,40 @@ export default {
             this.calculationCompleted = false;
         },
         computeResult() {
-
+            let result = ""
             const operatorIndex = this.calculatorStore.formula.indexOf(this.calculatorStore.text);
             this.secondNumber = parseFloat(this.calculatorStore.formula.substring(operatorIndex));
 
             switch (this.operator) {
                 case '+':
-                    this.result = this.firstNumber + this.secondNumber;
+                    result = this.firstNumber + this.secondNumber;
                     break;
                 case '-':
-                    this.result = this.firstNumber - this.secondNumber;
+                    result = this.firstNumber - this.secondNumber;
                     break;
                 case '/':
                     if (this.secondNumber !== 0) {
-                        this.result = this.firstNumber / this.secondNumber;
+                        result = this.firstNumber / this.secondNumber;
                     } else {
-                        this.result = 'Syntax Error';
+                        result = 'Syntax Error';
                     }
                     break;
                 case '*':
-                    this.result = this.firstNumber * this.secondNumber;
+                    result = this.firstNumber * this.secondNumber;
                     break;
                 default:
                     return
             }
             if (this.operator == null) {
-                this.result = this.calculatorStore.text
-                this.calculatorStore.formula = this.result
-                this.calculatorStore.formula += "=" + this.result.toString();
+                result = this.calculatorStore.text
+                this.result = result
+                this.calculatorStore.formula = result
+                this.calculatorStore.formula += "=" + result.toString();
                 this.calculationCompleted = true
             } else {
-                this.calculatorStore.text = this.result.toString();
-                this.calculatorStore.formula += "=" + this.result.toString();
+                this.calculatorStore.text = result.toString();
+                this.result = result
+                this.calculatorStore.formula += "=" + result.toString();
                 this.operator = null;
                 this.calculationCompleted = true
             }
