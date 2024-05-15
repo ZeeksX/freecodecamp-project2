@@ -81,6 +81,7 @@ export default {
             calculatorStore: useCalculatorStore(),
             firstNumber: null,
             secondNumber: null,
+            lastOperator: null,
             calculationCompleted: false
         };
     },
@@ -88,19 +89,37 @@ export default {
         append(label) {
             if (!this.calculationCompleted && this.calculatorStore.text !== "DIGIT LIMIT MET") {
                 if (this.calculatorStore.text === "0" || this.isOperator(this.calculatorStore.text)) {
+                    // Set operator if it's the first input or after an operator
                     this.calculatorStore.text = label;
+                    this.lastOperator = label;
                 } else {
                     if (this.isOperator(label)) {
-                        // Update displayed text only if the label is an operator
-                        this.calculatorStore.text = label;
+                        // Update displayed text and formula if the new label is an operator (except -) and there's a previous operator
+                        if (this.isOperator(this.lastOperator) && this.lastOperator !== label && label !== "-") {
+                            this.calculatorStore.text = label;
+                            this.lastOperator = label;
+
+                            // Update formula, replacing the last character (operator)
+                            this.calculatorStore.formula = this.calculatorStore.formula.slice(0, -1) + label;
+                        } else {
+                            this.calculatorStore.text = label
+                            this.calculatorStore.formula += label
+                        }
                     } else {
                         // Update displayed text with the new number if not an operator
                         this.calculatorStore.text += label;
+                        this.lastOperator = null; // Reset lastOperator for next input
                     }
+                    
                 }
-                this.calculatorStore.formula += label;
+
+                // Update formula only if the appended character is different from the last character
+                if (this.calculatorStore.formula.slice(-1) !== label) {
+                    this.calculatorStore.formula += label;
+                }
             }
         },
+
         isOperator(text) {
             return text === "+" || text === "-" || text === "*" || text === "/";
         },
