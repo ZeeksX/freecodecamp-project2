@@ -96,11 +96,14 @@ export default {
                     if (this.isOperator(label)) {
                         // Update displayed text and formula if the new label is an operator (except -) and there's a previous operator
                         if (this.isOperator(this.lastOperator) && this.lastOperator !== label && label !== "-") {
-                            this.calculatorStore.text = label;
-                            this.lastOperator = label;
+                            if (this.lastOperator == "+" || this.lastOperator == "/" || this.lastOperator == "*") {
+                                this.calculatorStore.text = label;
+                                this.lastOperator = label;
+                                this.calculatorStore.formula = this.calculatorStore.formula.slice(0, -1) + label;
+                            } else {
+                                this.calculatorStore.formula += label
+                            }
 
-                            // Update formula, replacing the last character (operator)
-                            this.calculatorStore.formula = this.calculatorStore.formula.slice(0, -1) + label;
                         } else {
                             this.calculatorStore.text = label
                             this.calculatorStore.formula += label
@@ -108,14 +111,20 @@ export default {
                     } else {
                         // Update displayed text with the new number if not an operator
                         this.calculatorStore.text += label;
+
                         this.lastOperator = null; // Reset lastOperator for next input
                     }
-                    
+
                 }
 
                 // Update formula only if the appended character is different from the last character
                 if (this.calculatorStore.formula.slice(-1) !== label) {
-                    this.calculatorStore.formula += label;
+                    if (this.lastOperator == "+" || this.lastOperator == "/" || this.lastOperator == "*") {
+                        this.calculatorStore.formula = this.calculatorStore.formula.slice(0, -1) + label;
+                    } else {
+
+                        this.calculatorStore.formula += label;
+                    }
                 }
             }
         },
