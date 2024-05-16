@@ -114,8 +114,18 @@ export default {
             } else if (this.calculationCompleted && this.isOperator(label)) {
                 this.calculationCompleted = false;
                 this.calculatorStore.text = label;
-                this.calculatorStore.formula = this.result + label;
+                if (this.result.toString().includes('.')) {
+                    const decimalPlaces = this.result.toString().split('.')[1].length;
+                    if (decimalPlaces > 4) {
+                        this.calculatorStore.formula = Number(this.result).toFixed(4) + label;
+                    } else {
+                        this.calculatorStore.formula = this.result + label;
+                    }
+                } else {
+                    this.calculatorStore.formula = this.result + label;
+                }
             }
+
         },
 
         isOperator(text) {
