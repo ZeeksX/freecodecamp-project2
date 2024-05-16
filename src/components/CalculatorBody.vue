@@ -82,7 +82,6 @@ export default {
     },
     methods: {
         append(label) {
-            this.calculationCompleted = false;
             if (!this.calculationCompleted && this.calculatorStore.text !== "DIGIT LIMIT MET") {
                 if (this.calculatorStore.text === "0" || this.isOperator(this.calculatorStore.text)) {
                     this.calculatorStore.text = label;
@@ -99,7 +98,7 @@ export default {
                     }
                 } else {
                     if (this.isOperator(label)) {
-                        // Replace previous operator if it's not "-"
+                        this.calculationCompleted = false;
                         if (this.isOperator(this.lastOperator) && label !== "-") {
                             this.calculatorStore.formula = this.calculatorStore.formula.slice(0, -1) + label;
                         } else {
@@ -108,17 +107,15 @@ export default {
                         }
                         this.lastOperator = label;
                     } else {
-                        // Append the number to the text and formula
                         this.calculatorStore.text += label;
                         this.calculatorStore.formula += label;
                     }
                 }
             } else if (this.calculationCompleted && this.isOperator(label)) {
-                this.calculatorStore.formula = this.result;
-                this.calculatorStore.formula += label;
                 this.calculationCompleted = false;
+                this.calculatorStore.text = label;
+                this.calculatorStore.formula = this.result + label;
             }
-
         },
 
         isOperator(text) {
@@ -135,14 +132,14 @@ export default {
         computeResult() {
             try {
                 this.calculatorStore.text = eval(this.calculatorStore.formula)
+                this.calculationCompleted = true;
+                this.result = this.calculatorStore.text
             } catch (error) {
                 this.calculatorStore.text = "Error";
             }
             this.calculatorStore.formula += "=" + this.calculatorStore.text;
-            this.result = this.calculatorStore.text
-            this.calculationCompleted = true;
-        },
 
+        },
     }
 };
 </script>
